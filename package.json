@@ -1,0 +1,63 @@
+{
+  "name": "tqgg",
+  "version": "0.0.2",
+  "description": "...",
+  "keywords": [
+    "node",
+    "cli"
+  ],
+  "homepage": "https://github.com/guoyunhe/tqgg#readme",
+  "bugs": {
+    "url": "https://github.com/guoyunhe/tqgg/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guoyunhe/tqgg.git"
+  },
+  "funding": "https://github.com/sponsors/guoyunhe",
+  "license": "MIT",
+  "author": {
+    "name": "Guo Yunhe",
+    "email": "i@guoyunhe.me"
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.ts",
+  "bin": {
+    "tqgg": "dist/tqgg.js"
+  },
+  "files": [
+    "dist",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node-scripts build",
+    "format": "node-scripts format",
+    "lint": "node-scripts lint",
+    "test": "node-scripts test",
+    "watch": "node-scripts watch"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true
+  },
+  "eslintConfig": {
+    "extends": "@guoyunhe/node-scripts"
+  },
+  "jest": {
+    "preset": "@guoyunhe/node-scripts"
+  },
+  "dependencies": {
+    "commander": "^10.0.0"
+  },
+  "devDependencies": {
+    "@guoyunhe/node-scripts": "^2.2.0",
+    "@tsconfig/node20": "^1.0.1",
+    "@tsconfig/strictest": "^2.0.1",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.3.1",
+    "typescript": "^5.1.3"
+  }
+}
