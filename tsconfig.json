@@ -1,17 +1,9 @@
 {
-  "extends": [
-    "@tsconfig/node20/tsconfig.json",
-    "@tsconfig/strictest/tsconfig.json"
-  ],
+  "extends": ["@tsconfig/node20/tsconfig.json", "@tsconfig/strictest/tsconfig.json"],
   "compilerOptions": {
     "resolveJsonModule": true,
-    "types": [
-      "node",
-      "jest",
-      "@guoyunhe/node-scripts/global"
-    ]
+    "moduleResolution": "NodeNext",
+    "types": ["node", "jest", "@guoyunhe/node-scripts/global"]
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

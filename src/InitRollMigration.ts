@@ -1,3 +1,6 @@
+import latestVersion from 'latest-version';
+import { readFile, stat, writeFile } from 'node:fs/promises';
+
 export interface InitRollMigrationOptions {
   /**
    * Migration version (not package version).
@@ -25,5 +28,65 @@ export class InitRollMigration {
    */
   async run() {
     // TODO
+  }
+
+  /**
+   * Update a text file
+   */
+  async updateFile(fileName: string, transform: (oldContent: string | null) => Promise<string>) {
+    let content: string | null = null;
+    const fileStat = await stat(fileName);
+    if (fileStat.isFile()) {
+      content = await readFile(fileName, 'utf-8');
+    }
+    content = await transform(content);
+    await writeFile(fileName, content, 'utf-8');
+  }
+
+  /**
+   * Update a json file
+   */
+  async updateJson(fileName: string, transform: (oldContent: any) => Promise<any>) {
+    await this.updateFile(fileName, async (oldJson) => {
+      let data = null;
+      if (oldJson) {
+        try {
+          data = JSON.parse(oldJson);
+        } catch (e) {
+          //
+        }
+      }
+      data = await transform(data);
+      return JSON.stringify(data);
+    });
+  }
+
+  /**
+   * Update package.json
+   */
+  async updatePackageJson(fileName: string, transform: (oldContent: any) => Promise<any>) {
+    await this.updateJson(fileName, async (oldPkg) => {
+      const newPkg = await transform(oldPkg);
+
+      // Update dependencies to latest version
+      await Promise.all([
+        ...Object.keys(newPkg?.dependencies).map(async (pkgName) => {
+          newPkg.dependencies[pkgName] =
+            '^' +
+            (await latestVersion(pkgName, {
+              version: newPkg.dependencies[pkgName],
+            }));
+        }),
+        ...Object.keys(newPkg?.devDependencies).map(async (pkgName) => {
+          newPkg.devDependencies[pkgName] =
+            '^' +
+            (await latestVersion(pkgName, {
+              version: newPkg.devDependencies[pkgName],
+            }));
+        }),
+      ]);
+
+      return newPkg;
+    });
   }
 }

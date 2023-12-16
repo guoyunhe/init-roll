@@ -20,8 +20,8 @@
     "name": "Guo Yunhe",
     "email": "i@guoyunhe.me"
   },
+  "type": "module",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
@@ -47,7 +47,8 @@
     "preset": "@guoyunhe/node-scripts"
   },
   "dependencies": {
-    "commander": "^10.0.1"
+    "commander": "^10.0.1",
+    "latest-version": "^7.0.0"
   },
   "devDependencies": {
     "@guoyunhe/node-scripts": "^2.2.0",
