@@ -23,9 +23,6 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
-  "bin": {
-    "init-roll": "dist/init-roll.js"
-  },
   "files": [
     "dist",
     "CHANGELOG.md",
