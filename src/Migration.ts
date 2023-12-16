@@ -50,7 +50,13 @@ export class Migration {
       if (!this.template) throw new Error('Migration must be added to a template');
 
       const newPkg = { ...oldPkg };
+      if (!newPkg.scripts) {
+        newPkg.scripts = {};
+      }
       newPkg.scripts['template:migrate'] = this.template.command;
+      if (!newPkg.devDependencies) {
+        newPkg.devDependencies = {};
+      }
       newPkg.devDependencies[this.template.pkgName] = 'latest';
       newPkg.template = {
         name: this.template.pkgName,
