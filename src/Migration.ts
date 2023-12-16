@@ -17,21 +17,17 @@ export interface MigrationOptions {
    * Execute migration
    */
   run: () => Promise<void>;
-
-  /**
-   * Should execute migration or not.
-   */
-  shouldRun?: () => boolean | Promise<boolean>;
 }
 
 export class Migration {
+  public template: Template | null = null;
+
   constructor(
     /**
-     * Link migration to your controller
-     */
-    private template: Template,
-    /**
      * Migration version (not package version).
+     *
+     * You can use increments like 1, 2, 3, ...
+     * Or use dates like 20230103, 20230713, 20231208, ...
      */
     public version: number,
     /**
@@ -40,9 +36,7 @@ export class Migration {
      * Note: here is no way to rollback, you need to use Git to revert unexpected changes.
      */
     private runner: (migration: Migration) => Promise<void>
-  ) {
-    template.addMigration(this);
-  }
+  ) {}
 
   /**
    * Execute the migration.
@@ -51,7 +45,10 @@ export class Migration {
    */
   async run() {
     await this.runner(this);
+
     await this.updatePackageJson((oldPkg) => {
+      if (!this.template) throw new Error('Migration must be added to a template');
+
       const newPkg = { ...oldPkg };
       newPkg.scripts['template:migrate'] = this.template.command;
       newPkg.devDependencies[this.template.pkgName] = 'latest';
@@ -72,6 +69,8 @@ export class Migration {
     /** Transform file content string */
     transform: (oldContent: string | null) => Promise<string>
   ) {
+    if (!this.template) throw new Error('Migration must be added to a template');
+
     const filePath = join(this.template.projectPath, fileName);
     let content: string | null = null;
     const fileStat = await stat(filePath);
@@ -148,6 +147,8 @@ export class Migration {
     source: string | string[],
     options?: fg.Options
   ) {
+    if (!this.template) throw new Error('Migration must be added to a template');
+
     const files = await fg(source, { cwd: this.template.projectPath, ...options });
     for (const file of files) {
       await rm(file);

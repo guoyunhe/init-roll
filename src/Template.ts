@@ -20,6 +20,7 @@ export class Template {
 
   addMigration(migration: Migration) {
     this.migrations.push(migration);
+    migration.template = this;
     this.migrations.sort((a, b) => a.version - b.version);
   }
 
