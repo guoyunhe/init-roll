@@ -1,6 +1,7 @@
 import fg from 'fast-glob';
 import latestVersion from 'latest-version';
 import { readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { Template } from './Template';
 
 export interface MigrationOptions {
@@ -71,13 +72,14 @@ export class Migration {
     /** Transform file content string */
     transform: (oldContent: string | null) => Promise<string>
   ) {
+    const filePath = join(this.template.projectPath, fileName);
     let content: string | null = null;
-    const fileStat = await stat(fileName);
+    const fileStat = await stat(filePath);
     if (fileStat.isFile()) {
-      content = await readFile(fileName, 'utf-8');
+      content = await readFile(filePath, 'utf-8');
     }
     content = await transform(content);
-    await writeFile(fileName, content, 'utf-8');
+    await writeFile(filePath, content, 'utf-8');
   }
 
   /**
@@ -146,7 +148,7 @@ export class Migration {
     source: string | string[],
     options?: fg.Options
   ) {
-    const files = await fg(source, options);
+    const files = await fg(source, { cwd: this.template.projectPath, ...options });
     for (const file of files) {
       await rm(file);
     }
