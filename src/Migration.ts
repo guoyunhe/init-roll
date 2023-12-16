@@ -1,6 +1,6 @@
 import fg from 'fast-glob';
 import latestVersion from 'latest-version';
-import { readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Template } from './Template';
 
@@ -73,9 +73,10 @@ export class Migration {
 
     const filePath = join(this.template.projectPath, fileName);
     let content: string | null = null;
-    const fileStat = await stat(filePath);
-    if (fileStat.isFile()) {
+    try {
       content = await readFile(filePath, 'utf-8');
+    } catch (e) {
+      // Not exist
     }
     content = await transform(content);
     await writeFile(filePath, content, 'utf-8');
