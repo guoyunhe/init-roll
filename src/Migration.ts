@@ -120,14 +120,14 @@ export class Migration {
 
       // Update dependencies to latest version
       await Promise.all([
-        ...Object.keys(newPkg?.dependencies).map(async (pkgName) => {
+        ...Object.keys(newPkg?.dependencies || {}).map(async (pkgName) => {
           newPkg.dependencies[pkgName] =
             '^' +
             (await latestVersion(pkgName, {
               version: newPkg.dependencies[pkgName],
             }));
         }),
-        ...Object.keys(newPkg?.devDependencies).map(async (pkgName) => {
+        ...Object.keys(newPkg?.devDependencies || {}).map(async (pkgName) => {
           newPkg.devDependencies[pkgName] =
             '^' +
             (await latestVersion(pkgName, {
