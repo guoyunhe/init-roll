@@ -3,7 +3,7 @@
 import { Command } from 'commander';
 import { action } from '..';
 
-const program = new Command('tqgg');
+const program = new Command('init-roll');
 
 program
   .argument('[word]', 'Word to print on console')

@@ -1,18 +1,18 @@
 {
-  "name": "tqgg",
+  "name": "init-roll",
   "version": "0.0.2",
-  "description": "...",
+  "description": "Framework for project creation and migration",
   "keywords": [
     "node",
     "cli"
   ],
-  "homepage": "https://github.com/guoyunhe/tqgg#readme",
+  "homepage": "https://github.com/guoyunhe/init-roll#readme",
   "bugs": {
-    "url": "https://github.com/guoyunhe/tqgg/issues"
+    "url": "https://github.com/guoyunhe/init-roll/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/guoyunhe/tqgg.git"
+    "url": "git+https://github.com/guoyunhe/init-roll.git"
   },
   "funding": "https://github.com/sponsors/guoyunhe",
   "license": "MIT",
@@ -24,7 +24,7 @@
   "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
   "bin": {
-    "tqgg": "dist/tqgg.js"
+    "init-roll": "dist/init-roll.js"
   },
   "files": [
     "dist",
@@ -50,14 +50,14 @@
     "preset": "@guoyunhe/node-scripts"
   },
   "dependencies": {
-    "commander": "^10.0.0"
+    "commander": "^10.0.1"
   },
   "devDependencies": {
     "@guoyunhe/node-scripts": "^2.2.0",
-    "@tsconfig/node20": "^1.0.1",
-    "@tsconfig/strictest": "^2.0.1",
-    "@types/jest": "^29.5.2",
-    "@types/node": "^20.3.1",
-    "typescript": "^5.1.3"
+    "@tsconfig/node20": "^1.0.2",
+    "@tsconfig/strictest": "^2.0.2",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.4",
+    "typescript": "^5.3.3"
   }
 }

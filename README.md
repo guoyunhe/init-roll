@@ -1,24 +1,24 @@
-# tqgg
+# init-roll
 
 ## Install
 
 ### Run directly
 
 ```bash
-npx tqgg
+npx init-roll
 ```
 
 ### Install on system
 
 ```bash
-npm i -g tqgg
+npm i -g init-roll
 %binName%
 ```
 
 ### Install in project
 
 ```bash
-npm i -D tqgg
+npm i -D init-roll
 ```
 
 Add script entry:
