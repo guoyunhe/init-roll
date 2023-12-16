@@ -55,7 +55,7 @@ export class Migration {
       newPkg.scripts['template:migrate'] = this.template.command;
       newPkg.devDependencies[this.template.pkgName] = 'latest';
       newPkg.template = {
-        name: this.template.name,
+        name: this.template.pkgName,
         version: this.version,
       };
       return newPkg;

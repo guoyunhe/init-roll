@@ -5,17 +5,17 @@ export class Template {
 
   constructor(
     /**
-     * Template name, usually the same as package name.
+     * Relative or absolute path to project root, where package.json is located.
      */
-    public name: string,
+    public projectPath: string,
     /**
-     * Migration command
+     * Package name of your `create-xxx` package.
      */
-    public command: string,
+    public pkgName: string,
     /**
-     * Package name that contains the migration command
+     * Migration command. e.g. create-xxx --no-interaction
      */
-    public pkgName: string
+    public command: string
   ) {}
 
   addMigration(migration: Migration) {
