@@ -1,48 +1,13 @@
 # init-roll
 
-## Install
+Framework for project creation and migration. Power your `create-xxx` or `@xxx/create-xxx` packages.
 
-### Run directly
-
-```bash
-npx init-roll
-```
-
-### Install on system
+## Create a create-xxx package
 
 ```bash
-npm i -g init-roll
-%binName%
+npm create init-roll create-xxx
+# or
+yarn create init-roll create-xxx
+# or
+pnpm create init-roll create-xxx
 ```
-
-### Install in project
-
-```bash
-npm i -D init-roll
-```
-
-Add script entry:
-
-```json
-{
-  "scripts": {
-    "%binName%": "%binName%"
-  }
-}
-```
-
-Run:
-
-```bash
-npm run %binName%
-```
-
-## Options
-
-### `--help`
-
-Show help
-
-### `--version`
-
-Show version
