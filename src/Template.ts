@@ -7,7 +7,15 @@ export class Template {
     /**
      * Template name, usually the same as package name.
      */
-    public name: string
+    public name: string,
+    /**
+     * Migration command
+     */
+    public command: string,
+    /**
+     * Package name that contains the migration command
+     */
+    public pkgName: string
   ) {}
 
   addMigration(migration: Migration) {

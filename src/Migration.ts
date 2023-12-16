@@ -28,7 +28,7 @@ export class Migration {
     /**
      * Link migration to your controller
      */
-    private parent: Template,
+    private template: Template,
     /**
      * Migration version (not package version).
      */
@@ -40,7 +40,7 @@ export class Migration {
      */
     private runner: (migration: Migration) => Promise<void>
   ) {
-    parent.addMigration(this);
+    template.addMigration(this);
   }
 
   /**
@@ -48,8 +48,18 @@ export class Migration {
    *
    * Note: here is no way to rollback, you need to use Git to revert unexpected changes.
    */
-  run() {
-    return this.runner(this);
+  async run() {
+    await this.runner(this);
+    await this.updatePackageJson((oldPkg) => {
+      const newPkg = { ...oldPkg };
+      newPkg.scripts['template:migrate'] = this.template.command;
+      newPkg.devDependencies[this.template.pkgName] = 'latest';
+      newPkg.template = {
+        name: this.template.name,
+        version: this.version,
+      };
+      return newPkg;
+    });
   }
 
   /**
@@ -123,11 +133,6 @@ export class Migration {
             }));
         }),
       ]);
-
-      newPkg.template = {
-        name: this.parent.name,
-        version: this.version,
-      };
 
       return newPkg;
     });
