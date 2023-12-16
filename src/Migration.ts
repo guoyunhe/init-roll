@@ -67,7 +67,7 @@ export class Migration {
     /** File name related to project root */
     fileName: string,
     /** Transform file content string */
-    transform: (oldContent: string | null) => Promise<string>
+    transform: (oldContent: string | null) => string | Promise<string>
   ) {
     if (!this.template) throw new Error('Migration must be added to a template');
 
@@ -88,7 +88,7 @@ export class Migration {
     /** File name related to project root */
     fileName: string,
     /** Transform JSON object */
-    transform: (oldContent: any) => Promise<any>
+    transform: (oldContent: any) => any | Promise<any>
   ) {
     await this.updateFile(fileName, async (oldJson) => {
       let data = null;
@@ -112,7 +112,7 @@ export class Migration {
    */
   async updatePackageJson(
     /** Transform package.json object */
-    transform: (oldContent: any) => Promise<any>
+    transform: (oldContent: any) => any | Promise<any>
   ) {
     await this.updateJson('package.json', async (oldPkg) => {
       const newPkg = await transform(oldPkg);
