@@ -99,7 +99,7 @@ export class Migration {
         }
       }
       data = await transform(data);
-      return JSON.stringify(data);
+      return JSON.stringify(data, null, 2);
     });
   }
 
