@@ -1,8 +1,9 @@
 {
   "extends": ["@tsconfig/node20/tsconfig.json", "@tsconfig/strictest/tsconfig.json"],
   "compilerOptions": {
+    "module": "CommonJS",
     "resolveJsonModule": true,
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "types": ["node", "jest", "@guoyunhe/node-scripts/global"]
   },
   "include": ["src"]
