@@ -1,3 +1,4 @@
+import fse from 'fs-extra';
 import { Migration } from './Migration';
 
 export class Template {
@@ -25,6 +26,7 @@ export class Template {
   }
 
   async migrate() {
+    await fse.mkdirp(this.projectPath);
     for (const migration of this.migrations) {
       await migration.run();
     }

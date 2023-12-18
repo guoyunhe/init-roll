@@ -1,6 +1,7 @@
 import fg from 'fast-glob';
+import fse from 'fs-extra';
 import latestVersion from 'latest-version';
-import { readFile, rm, writeFile } from 'node:fs/promises';
+import { readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { Template } from './Template';
 
@@ -85,7 +86,7 @@ export class Migration {
       // Not exist
     }
     content = await transform(content);
-    await writeFile(filePath, content, 'utf-8');
+    await fse.outputFile(filePath, content, 'utf-8');
   }
 
   /**
