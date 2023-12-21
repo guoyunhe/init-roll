@@ -33,7 +33,13 @@ export class Template {
   ) {
     this.project = project;
     await fse.mkdirp(this.project);
-    const packageJson = await fse.readJSON(join(this.project, 'package.json'));
+    let packageJson: any;
+
+    try {
+      packageJson = await fse.readJSON(join(this.project, 'package.json'));
+    } catch (e) {
+      // not exist, skip
+    }
 
     for (const migration of this.migrations) {
       // skip migrated version
