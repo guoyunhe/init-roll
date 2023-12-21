@@ -67,7 +67,11 @@ export class Migration {
 
     // .foobar -> .foobar.new
     // foobar.ts -> foobar.new.ts
-    if (!override && (await fse.exists(filePath))) {
+    if (
+      !override &&
+      (await fse.exists(filePath)) &&
+      content.trim() !== (await fse.readFile(filePath, 'utf-8')).trim()
+    ) {
       const dotIndex = filePath.lastIndexOf('.');
       filePath =
         dotIndex > 0
