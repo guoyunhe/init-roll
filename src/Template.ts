@@ -4,17 +4,15 @@ import { compare } from 'semver';
 import { Migration } from './Migration';
 
 export class Template {
+  public project = '.';
+
   private migrations: Migration[] = [];
 
   constructor(
     /**
-     * Relative or absolute path to project root, where package.json is located.
-     */
-    public projectPath: string,
-    /**
      * Package name of your `create-xxx` package.
      */
-    public pkgName: string,
+    public name: string,
     /**
      * Migration command. e.g. create-xxx --no-interaction
      */
@@ -27,14 +25,20 @@ export class Template {
     this.migrations.sort((a, b) => compare(a.version, b.version));
   }
 
-  async migrate() {
-    await fse.mkdirp(this.projectPath);
-    const packageJson = await fse.readJSON(join(this.projectPath, 'package.json'));
+  async migrate(
+    /**
+     * Relative or absolute path to project root, where package.json is located.
+     */
+    project: string
+  ) {
+    this.project = project;
+    await fse.mkdirp(this.project);
+    const packageJson = await fse.readJSON(join(this.project, 'package.json'));
 
     for (const migration of this.migrations) {
       // skip migrated version
       if (
-        packageJson?.template?.name === this.pkgName &&
+        packageJson?.template?.name === this.name &&
         packageJson?.template?.version <= migration.version
       ) {
         continue;

@@ -42,9 +42,9 @@ export class Migration {
       if (!newPkg.devDependencies) {
         newPkg.devDependencies = {};
       }
-      newPkg.devDependencies[this.template.pkgName] = 'latest';
+      newPkg.devDependencies[this.template.name] = 'latest';
       newPkg.template = {
-        name: this.template.pkgName,
+        name: this.template.name,
         version: this.version,
       };
       return newPkg;
@@ -63,7 +63,7 @@ export class Migration {
   ) {
     if (!this.template) throw new Error('Migration must be added to a template');
 
-    let filePath = join(this.template.projectPath, fileName);
+    let filePath = join(this.template.project, fileName);
 
     // .foobar -> .foobar.new
     // foobar.ts -> foobar.new.ts
@@ -89,7 +89,7 @@ export class Migration {
   ) {
     if (!this.template) throw new Error('Migration must be added to a template');
 
-    const filePath = join(this.template.projectPath, fileName);
+    const filePath = join(this.template.project, fileName);
     let content: string | null = null;
     try {
       content = await readFile(filePath, 'utf-8');
@@ -147,7 +147,7 @@ export class Migration {
         }),
         ...Object.keys(newPkg?.devDependencies || {}).map(async (pkgName) => {
           // Keep the template package as latest
-          if (pkgName === this.template?.pkgName) return;
+          if (pkgName === this.template?.name) return;
           newPkg.devDependencies[pkgName] =
             '^' +
             (await latestVersion(pkgName, {
@@ -170,7 +170,7 @@ export class Migration {
   ) {
     if (!this.template) throw new Error('Migration must be added to a template');
 
-    const files = await fg(source, { cwd: this.template.projectPath, ...options });
+    const files = await fg(source, { cwd: this.template.project, ...options });
     for (const file of files) {
       await rm(file);
     }
