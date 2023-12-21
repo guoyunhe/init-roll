@@ -83,6 +83,19 @@ export class Migration {
   }
 
   /**
+   * Create a json file, override existing file or add *_new.* affix.
+   */
+  async createJson(
+    /** File name related to project root */
+    fileName: string,
+    /** JSON object */
+    content: any,
+    override?: boolean
+  ) {
+    await this.createFile(fileName, JSON.stringify(content, null, 2), override);
+  }
+
+  /**
    * Update a text file
    */
   async updateFile(
