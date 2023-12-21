@@ -1,5 +1,6 @@
 import fse from 'fs-extra';
 import { join } from 'path';
+import { compare } from 'semver';
 import { Migration } from './Migration';
 
 export class Template {
@@ -23,7 +24,7 @@ export class Template {
   addMigration(migration: Migration) {
     this.migrations.push(migration);
     migration.template = this;
-    this.migrations.sort((a, b) => a.version - b.version);
+    this.migrations.sort((a, b) => compare(a.version, b.version));
   }
 
   async migrate() {

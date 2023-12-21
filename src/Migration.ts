@@ -5,32 +5,16 @@ import latestVersion from 'latest-version';
 import { join } from 'path';
 import type { Template } from './Template';
 
-export interface MigrationOptions {
-  /**
-   * Migration version (not package version).
-   *
-   * You can use increments like 1, 2, 3, ...
-   * Or use dates like 20230103, 20230713, 20231208, ...
-   */
-  version: number;
-
-  /**
-   * Execute migration
-   */
-  run: () => Promise<void>;
-}
-
 export class Migration {
   public template: Template | null = null;
 
   constructor(
     /**
-     * Migration version (not package version).
-     *
-     * You can use increments like 1, 2, 3, ...
-     * Or use dates like 20230103, 20230713, 20231208, ...
+     * Migration version usually matches the package version when it is released. After released,
+     * the migration should never be changed again. At next release, you should create a new
+     * migration with your next package version.
      */
-    public version: number,
+    public version: string,
     /**
      * Design the migration schema. Here you can create, update and delete files as you wish.
      *
