@@ -1,4 +1,5 @@
 import fse from 'fs-extra';
+import { join } from 'path';
 import { Migration } from './Migration';
 
 export class Template {
@@ -27,7 +28,17 @@ export class Template {
 
   async migrate() {
     await fse.mkdirp(this.projectPath);
+    const packageJson = await fse.readJSON(join(this.projectPath, 'package.json'));
+
     for (const migration of this.migrations) {
+      // skip migrated version
+      if (
+        packageJson?.template?.name === this.pkgName &&
+        packageJson?.template?.version <= migration.version
+      ) {
+        continue;
+      }
+      // migrate a version
       await migration.run();
     }
   }

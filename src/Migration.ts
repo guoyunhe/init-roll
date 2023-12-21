@@ -162,6 +162,8 @@ export class Migration {
             }));
         }),
         ...Object.keys(newPkg?.devDependencies || {}).map(async (pkgName) => {
+          // Keep the template package as latest
+          if (pkgName === this.template?.pkgName) return;
           newPkg.devDependencies[pkgName] =
             '^' +
             (await latestVersion(pkgName, {
