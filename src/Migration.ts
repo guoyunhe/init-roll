@@ -1,9 +1,9 @@
 import fg from 'fast-glob';
 import fse from 'fs-extra';
+import { readFile, rm } from 'fs/promises';
 import latestVersion from 'latest-version';
-import { readFile, rm } from 'node:fs/promises';
-import { join } from 'node:path';
-import { Template } from './Template';
+import { join } from 'path';
+import type { Template } from './Template';
 
 export interface MigrationOptions {
   /**
@@ -65,6 +65,33 @@ export class Migration {
       };
       return newPkg;
     });
+  }
+
+  /**
+   * Create a text file, override existing file or add *_new.* affix.
+   */
+  async createFile(
+    /** File name related to project root */
+    fileName: string,
+    /** File content string */
+    content: string,
+    override?: boolean
+  ) {
+    if (!this.template) throw new Error('Migration must be added to a template');
+
+    let filePath = join(this.template.projectPath, fileName);
+
+    // .foobar -> .foobar.new
+    // foobar.ts -> foobar.new.ts
+    if (!override && (await fse.exists(filePath))) {
+      const dotIndex = filePath.lastIndexOf('.');
+      filePath =
+        dotIndex > 0
+          ? filePath.substring(0, dotIndex) + '.new' + filePath.substring(dotIndex)
+          : filePath + '.new';
+    }
+
+    await fse.outputFile(filePath, content, 'utf-8');
   }
 
   /**
