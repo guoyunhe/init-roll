@@ -1,6 +1,6 @@
 import fse from 'fs-extra';
 import { join } from 'path';
-import { compare } from 'semver';
+import { compare, lte } from 'semver';
 import { Migration } from './Migration';
 
 export class Template {
@@ -38,8 +38,10 @@ export class Template {
     for (const migration of this.migrations) {
       // skip migrated version
       if (
-        packageJson?.template?.name === this.name &&
-        packageJson?.template?.version <= migration.version
+        packageJson?.template?.name &&
+        packageJson.template.name === this.name &&
+        packageJson?.template?.version &&
+        lte(packageJson.template.version, migration.version)
       ) {
         continue;
       }
