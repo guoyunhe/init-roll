@@ -1,5 +1,3 @@
-import chalk from 'chalk';
-import * as diff from 'diff';
 import fg from 'fast-glob';
 import fse from 'fs-extra';
 import { readFile, rm } from 'fs/promises';
@@ -65,37 +63,31 @@ export class Migration {
   ) {
     if (!this.template) throw new Error('Migration must be added to a template');
 
-    let filePath = join(this.template.project, fileName);
+    const filePath = join(this.template.project, fileName);
 
-    // .foobar -> .foobar.new
-    // foobar.ts -> foobar.new.ts
-    if (
-      !override &&
-      (await fse.exists(filePath)) &&
-      content.trim() !== (await fse.readFile(filePath, 'utf-8')).trim()
-    ) {
-      console.log(filePath);
-      const result = diff.diffLines(content.trim(), (await fse.readFile(filePath, 'utf-8')).trim());
-      result.forEach((part) => {
-        // green for additions, red for deletions
-        // grey for common parts
-        if (part.added) {
-          process.stdout.write(chalk.green(encodeURIComponent(part.value)));
-        } else if (part.removed) {
-          process.stdout.write(chalk.red(encodeURIComponent(part.value)));
-        } else {
-          process.stdout.write(chalk.grey(part.value));
-        }
-      });
-
+    if (!override && (await fse.exists(filePath))) {
+      // new file name with ".new"
+      // .foobar -> .foobar.new
+      // foobar.ts -> foobar.new.ts
       const dotIndex = filePath.lastIndexOf('.');
-      filePath =
+      const newFilePath =
         dotIndex > 0
           ? filePath.substring(0, dotIndex) + '.new' + filePath.substring(dotIndex)
           : filePath + '.new';
-    }
 
-    await fse.outputFile(filePath, content, 'utf-8');
+      // after writting to fs, line feed chars will change. so we can only compare two strings after
+      // they were written to fs.
+      const oldContent = await fse.readFile(filePath, 'utf-8');
+      await fse.outputFile(newFilePath, content, 'utf-8');
+      const newContent = await fse.readFile(newFilePath, 'utf-8');
+
+      // if old and new file content are equal, delete new file
+      if (oldContent.trim() === newContent.trim()) {
+        await fse.rm(newFilePath);
+      }
+    } else {
+      await fse.outputFile(filePath, content, 'utf-8');
+    }
   }
 
   /**

@@ -48,7 +48,6 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
-    "diff": "^5.1.0",
     "fast-glob": "^3.3.2",
     "fs-extra": "^11.2.0",
     "latest-version": "^7.0.0",
@@ -58,7 +57,6 @@
     "@guoyunhe/node-scripts": "^2.2.0",
     "@tsconfig/node20": "^1.0.2",
     "@tsconfig/strictest": "^2.0.2",
-    "@types/diff": "^5.0.9",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
