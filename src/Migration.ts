@@ -1,3 +1,5 @@
+import chalk from 'chalk';
+import diff from 'diff';
 import fg from 'fast-glob';
 import fse from 'fs-extra';
 import { readFile, rm } from 'fs/promises';
@@ -72,11 +74,20 @@ export class Migration {
       (await fse.exists(filePath)) &&
       content.trim() !== (await fse.readFile(filePath, 'utf-8')).trim()
     ) {
-      console.log(
-        filePath,
-        content.trim().length,
-        (await fse.readFile(filePath, 'utf-8')).trim().length
-      );
+      console.log(filePath);
+      const result = diff.diffLines(content.trim(), (await fse.readFile(filePath, 'utf-8')).trim());
+      result.forEach((part) => {
+        // green for additions, red for deletions
+        // grey for common parts
+        if (part.added) {
+          process.stdout.write(chalk.green(encodeURIComponent(part.value)));
+        } else if (part.removed) {
+          process.stdout.write(chalk.red(encodeURIComponent(part.value)));
+        } else {
+          process.stdout.write(chalk.grey(part.value));
+        }
+      });
+
       const dotIndex = filePath.lastIndexOf('.');
       filePath =
         dotIndex > 0
