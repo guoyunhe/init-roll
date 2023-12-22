@@ -72,6 +72,9 @@ export class Migration {
       (await fse.exists(filePath)) &&
       content.trim() !== (await fse.readFile(filePath, 'utf-8')).trim()
     ) {
+      console.log(filePath);
+      console.log(content.trim());
+      console.log((await fse.readFile(filePath, 'utf-8')).trim());
       const dotIndex = filePath.lastIndexOf('.');
       filePath =
         dotIndex > 0
