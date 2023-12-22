@@ -1,5 +1,5 @@
 import chalk from 'chalk';
-import diff from 'diff';
+import * as diff from 'diff';
 import fg from 'fast-glob';
 import fse from 'fs-extra';
 import { readFile, rm } from 'fs/promises';
