@@ -1,6 +1,6 @@
 {
   "name": "init-roll",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Framework for project creation and migration",
   "keywords": [
     "node",
