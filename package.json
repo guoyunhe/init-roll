@@ -58,8 +58,8 @@
     "@tsconfig/node20": "^1.0.2",
     "@tsconfig/strictest": "^2.0.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/jest": "^29.5.11",
-    "@types/node": "^20.11.15",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.11.16",
     "@types/react": "^18.2.51",
     "@types/react-dom": "^18.2.18",
     "@types/semver": "^7.5.6",
@@ -67,7 +67,7 @@
     "react": "^18.2.0",
     "react-doc-ui": "^2.2.0",
     "react-dom": "^18.2.0",
-    "rive": "^2.0.18",
+    "rive": "^2.0.19",
     "typescript": "^5.3.3"
   },
   "rive": {
