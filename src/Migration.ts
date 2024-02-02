@@ -20,7 +20,7 @@ export class Migration {
      *
      * Note: here is no way to rollback, you need to use Git to revert unexpected changes.
      */
-    private runner: (migration: Migration) => Promise<void>
+    private runner: (migration: Migration) => Promise<void>,
   ) {}
 
   /**
@@ -32,7 +32,8 @@ export class Migration {
     await this.runner(this);
 
     await this.updatePackageJson((oldPkg) => {
-      if (!this.template) throw new Error('Migration must be added to a template');
+      if (!this.template)
+        throw new Error('Migration must be added to a template');
 
       const newPkg = { ...oldPkg };
       if (!newPkg.scripts) {
@@ -59,9 +60,10 @@ export class Migration {
     fileName: string,
     /** File content string */
     content: string,
-    override?: boolean
+    override?: boolean,
   ) {
-    if (!this.template) throw new Error('Migration must be added to a template');
+    if (!this.template)
+      throw new Error('Migration must be added to a template');
 
     const filePath = join(this.template.project, fileName);
 
@@ -72,7 +74,9 @@ export class Migration {
       const dotIndex = filePath.lastIndexOf('.');
       const newFilePath =
         dotIndex > 0
-          ? filePath.substring(0, dotIndex) + '.new' + filePath.substring(dotIndex)
+          ? filePath.substring(0, dotIndex) +
+            '.new' +
+            filePath.substring(dotIndex)
           : filePath + '.new';
 
       // after writting to fs, line feed chars will change. so we can only compare two strings after
@@ -98,7 +102,7 @@ export class Migration {
     fileName: string,
     /** JSON object */
     content: any,
-    override?: boolean
+    override?: boolean,
   ) {
     await this.createFile(fileName, JSON.stringify(content, null, 2), override);
   }
@@ -110,9 +114,10 @@ export class Migration {
     /** File name related to project root */
     fileName: string,
     /** Transform file content string */
-    transform: (oldContent: string | null) => string | Promise<string>
+    transform: (oldContent: string | null) => string | Promise<string>,
   ) {
-    if (!this.template) throw new Error('Migration must be added to a template');
+    if (!this.template)
+      throw new Error('Migration must be added to a template');
 
     const filePath = join(this.template.project, fileName);
     let content: string | null = null;
@@ -132,7 +137,7 @@ export class Migration {
     /** File name related to project root */
     fileName: string,
     /** Transform JSON object */
-    transform: (oldContent: any) => any | Promise<any>
+    transform: (oldContent: any) => any | Promise<any>,
   ) {
     await this.updateFile(fileName, async (oldJson) => {
       let data = null;
@@ -156,7 +161,7 @@ export class Migration {
    */
   async updatePackageJson(
     /** Transform package.json object */
-    transform: (oldContent: any) => any | Promise<any>
+    transform: (oldContent: any) => any | Promise<any>,
   ) {
     await this.updateJson('package.json', async (oldPkg) => {
       const newPkg = await transform(oldPkg);
@@ -191,9 +196,10 @@ export class Migration {
   async delete(
     /** File name(s) or glob pattern(s) */
     source: string | string[],
-    options?: fg.Options
+    options?: fg.Options,
   ) {
-    if (!this.template) throw new Error('Migration must be added to a template');
+    if (!this.template)
+      throw new Error('Migration must be added to a template');
 
     const files = await fg(source, { cwd: this.template.project, ...options });
     for (const file of files) {

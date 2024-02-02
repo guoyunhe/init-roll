@@ -16,7 +16,7 @@ export class Template {
     /**
      * Migration command. e.g. create-xxx --no-interaction
      */
-    public command: string
+    public command: string,
   ) {}
 
   addMigration(migration: Migration) {
@@ -29,7 +29,7 @@ export class Template {
     /**
      * Relative or absolute path to project root, where package.json is located.
      */
-    project: string
+    project: string,
   ) {
     this.project = project;
     await fse.mkdirp(this.project);

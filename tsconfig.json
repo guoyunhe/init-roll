@@ -1,10 +1,21 @@
 {
-  "extends": ["@tsconfig/node20/tsconfig.json", "@tsconfig/strictest/tsconfig.json"],
+  "extends": [
+    "@tsconfig/node20/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json",
+  ],
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "esnext",
     "resolveJsonModule": true,
-    "moduleResolution": "Node",
-    "types": ["node", "jest", "@guoyunhe/node-scripts/global"]
+    "moduleResolution": "node",
+    "types": ["node", "rive/globals", "jest", "@guoyunhe/node-scripts/global"],
+    "target": "esnext",
+    "lib": ["esnext"],
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "isolatedModules": true,
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/*.spec.js", "**/*.spec.ts", "**/*.test.js", "**/*.test.ts"],
 }

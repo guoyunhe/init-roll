@@ -21,8 +21,10 @@
     "email": "i@guoyunhe.me"
   },
   "type": "module",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "style": "dist/index.css",
   "files": [
     "dist",
     "CHANGELOG.md",
@@ -30,21 +32,18 @@
     "README.md"
   ],
   "scripts": {
-    "build": "node-scripts build",
-    "format": "node-scripts format",
-    "lint": "node-scripts lint",
-    "test": "node-scripts test",
-    "watch": "node-scripts watch"
+    "build": "rive build",
+    "build:watch": "rive build --watch",
+    "deploy": "gh-pages -d build",
+    "lint": "rive lint",
+    "lint:fix": "rive lint --fix",
+    "start": "rive start",
+    "test": "rive test",
+    "test:watch": "rive test --watch"
   },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true
-  },
+  "prettier": "prettier-config-rive",
   "eslintConfig": {
-    "extends": "@guoyunhe/node-scripts"
-  },
-  "jest": {
-    "preset": "@guoyunhe/node-scripts"
+    "extends": "eslint-config-rive"
   },
   "dependencies": {
     "chalk": "^5.3.0",
@@ -55,12 +54,26 @@
   },
   "devDependencies": {
     "@guoyunhe/node-scripts": "^2.2.0",
+    "@mdx-js/react": "^3.0.0",
     "@tsconfig/node20": "^1.0.2",
     "@tsconfig/strictest": "^2.0.2",
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.11.15",
+    "@types/react": "^18.2.51",
+    "@types/react-dom": "^18.2.18",
     "@types/semver": "^7.5.6",
+    "gh-pages": "^5.0.0",
+    "react": "^18.2.0",
+    "react-doc-ui": "^2.2.0",
+    "react-dom": "^18.2.0",
+    "rive": "^2.0.18",
     "typescript": "^5.3.3"
+  },
+  "rive": {
+    "template": "node",
+    "doc": {
+      "basename": "/init-roll/"
+    }
   }
 }
