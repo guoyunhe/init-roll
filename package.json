@@ -20,10 +20,9 @@
     "name": "Guo Yunhe",
     "email": "i@guoyunhe.me"
   },
-  "main": "dist/cjs/index.js",
-  "module": "dist/index.js",
+  "type": "module",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "style": "dist/index.css",
   "files": [
     "dist",
     "CHANGELOG.md",
@@ -58,7 +57,6 @@
     "sort-package-json": "^2.7.0"
   },
   "devDependencies": {
-    "@guoyunhe/node-scripts": "^2.2.0",
     "@mdx-js/react": "^3.0.0",
     "@tsconfig/node20": "^1.0.2",
     "@tsconfig/strictest": "^2.0.2",

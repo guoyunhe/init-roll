@@ -52,6 +52,7 @@ export async function init(
       await writeFile(outputFullPath, outputStr, 'utf-8');
 
       if (outputStr.startsWith('#!')) {
+        // Add x mode to executable scripts
         await chmod(outputFullPath, '755');
       }
 
@@ -105,6 +106,7 @@ export async function init(
 
       outputJson = merge(outputJson, templateJson, { arrayMerge });
 
+      // Special process for package.json
       if (
         outputFile === 'package.json' ||
         outputFile.endsWith('/package.json')
