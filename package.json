@@ -59,14 +59,14 @@
     "@mdx-js/react": "^3.0.0",
     "@types/ejs": "^3.1.5",
     "@types/node": "^20.11.16",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/react": "^18.2.52",
+    "@types/react-dom": "^18.2.18",
     "gh-pages": "^5.0.0",
     "react": "^18.2.0",
-    "react-doc-ui": "^2.0.0",
+    "react-doc-ui": "^2.2.0",
     "react-dom": "^18.2.0",
-    "rive": "^2.0.0",
-    "typescript": "^5.0.0"
+    "rive": "^2.0.19",
+    "typescript": "^5.3.3"
   },
   "rive": {
     "template": "node",
