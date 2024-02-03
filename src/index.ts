@@ -108,16 +108,26 @@ export async function init(
       // Special process for package.json
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
-        Object.entries<string>(outputJson.dependencies || {}).map(([packageName, version]) => {
-          if (version.startsWith('^')) {
-            outputJson.dependencies[packageName] = '^' + latestVersion(packageName, { version });
-          }
-        });
-        Object.entries<string>(outputJson.devDependencies || {}).map(([packageName, version]) => {
-          if (version.startsWith('^')) {
-            outputJson.devDependencies[packageName] = '^' + latestVersion(packageName, { version });
-          }
-        });
+        await Promise.all(
+          Object.entries<string>(outputJson.dependencies || {}).map(
+            async ([packageName, version]) => {
+              if (version.startsWith('^')) {
+                outputJson.dependencies[packageName] =
+                  '^' + (await latestVersion(packageName, { version }));
+              }
+            }
+          )
+        );
+        await Promise.all(
+          Object.entries<string>(outputJson.devDependencies || {}).map(
+            async ([packageName, version]) => {
+              if (version.startsWith('^')) {
+                outputJson.devDependencies[packageName] =
+                  '^' + (await latestVersion(packageName, { version }));
+              }
+            }
+          )
+        );
         outputJson = merge(repoData, outputJson);
         outputJson = sortPackageJson(outputJson);
       }
