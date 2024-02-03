@@ -111,9 +111,9 @@ export async function init(
         outputFile === 'package.json' ||
         outputFile.endsWith('/package.json')
       ) {
-        outputJson = sortPackageJson(outputJson);
         const repoData = await getPackageJsonFromGit(projectDir);
         outputJson = merge(repoData, outputJson);
+        outputJson = sortPackageJson(outputJson);
       }
 
       await writeFile(
