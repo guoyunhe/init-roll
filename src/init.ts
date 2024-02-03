@@ -72,7 +72,7 @@ export async function init(
       const templateJson = JSON5.parse(
         await readFile(join(templateDir, template), 'utf-8')
       );
-      const outputFile = template.replace(/\.delete\.json$/, 'json');
+      const outputFile = template.replace(/\.delete\.json$/, '.json');
       const outputFullPath = join(projectDir, outputFile);
       try {
         const outputJson = JSON5.parse(await readFile(outputFullPath, 'utf-8'));
@@ -92,7 +92,7 @@ export async function init(
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       const templateJsonStr = ejs.render(templateStr, params);
       const templateJson = JSON5.parse(templateJsonStr);
-      const outputFile = template.replace(/\.merge\.json$/, 'json');
+      const outputFile = template.replace(/\.merge\.json$/, '.json');
       const outputFullPath = join(projectDir, outputFile);
       let outputJson: any = {};
       let exist = false;
