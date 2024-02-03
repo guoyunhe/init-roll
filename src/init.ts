@@ -89,9 +89,9 @@ export async function init(
     (
       await glob(['**/*.merge.json'], { cwd: templateDir, dot: true })
     ).map(async (template) => {
-      const templateJson = JSON5.parse(
-        await readFile(join(templateDir, template), 'utf-8')
-      );
+      const templateStr = await readFile(join(templateDir, template), 'utf-8');
+      const templateJsonStr = ejs.render(templateStr, params);
+      const templateJson = JSON5.parse(templateJsonStr);
       const outputFile = template.replace(/\.merge\.json$/, 'json');
       const outputFullPath = join(projectDir, outputFile);
       let outputJson: any = {};
