@@ -4,7 +4,9 @@ import ejs from 'ejs';
 import glob from 'fast-glob';
 import { access, chmod, readFile, rm, writeFile } from 'fs/promises';
 import JSON5 from 'json5';
+import { getPackageJsonFromGit } from 'package-json-from-git';
 import { join } from 'path';
+import sortPackageJson from 'sort-package-json';
 import { arrayMerge } from './private/arrayMerge';
 import { deleteMerge } from './private/deleteMerge';
 
@@ -102,6 +104,15 @@ export async function init(
       }
 
       outputJson = merge(outputJson, templateJson, { arrayMerge });
+
+      if (
+        outputFile === 'package.json' ||
+        outputFile.endsWith('/package.json')
+      ) {
+        outputJson = sortPackageJson(outputJson);
+        const repoData = await getPackageJsonFromGit(projectDir);
+        outputJson = merge(repoData, outputJson);
+      }
 
       await writeFile(
         outputFullPath,
