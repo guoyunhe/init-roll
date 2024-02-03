@@ -40,7 +40,7 @@ export async function init(
     ).map(async (template) => {
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       const outputStr = ejs.render(templateStr, params);
-      const outputFile = template.replace(/\.ejs$/, '');
+      const outputFile = ejs.render(template.replace(/\.ejs$/, ''), params);
       const outputFullPath = join(projectDir, outputFile);
       let exist = false;
       try {
