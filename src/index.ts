@@ -4,6 +4,7 @@ import ejs from 'ejs';
 import glob from 'fast-glob';
 import { access, chmod, readFile, rm, writeFile } from 'fs/promises';
 import JSON5 from 'json5';
+import latestVersion from 'latest-version';
 import { getPackageJsonFromGit } from 'package-json-from-git';
 import { join } from 'path';
 import sortPackageJson from 'sort-package-json';
@@ -107,6 +108,16 @@ export async function init(
       // Special process for package.json
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
+        Object.entries<string>(outputJson.dependencies || {}).map(([packageName, version]) => {
+          if (version.startsWith('^')) {
+            outputJson.dependencies[packageName] = '^' + latestVersion(packageName, { version });
+          }
+        });
+        Object.entries<string>(outputJson.devDependencies || {}).map(([packageName, version]) => {
+          if (version.startsWith('^')) {
+            outputJson.devDependencies[packageName] = '^' + latestVersion(packageName, { version });
+          }
+        });
         outputJson = merge(repoData, outputJson);
         outputJson = sortPackageJson(outputJson);
       }
