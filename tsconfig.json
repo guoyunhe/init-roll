@@ -1,21 +1,40 @@
 {
   "extends": [
     "@tsconfig/node20/tsconfig.json",
-    "@tsconfig/strictest/tsconfig.json",
+    "@tsconfig/strictest/tsconfig.json"
   ],
   "compilerOptions": {
     "module": "esnext",
     "resolveJsonModule": true,
     "moduleResolution": "node",
-    "types": ["node", "rive/globals", "jest", "@guoyunhe/node-scripts/global"],
-    "target": "esnext",
-    "lib": ["esnext"],
+    "types": [
+      "node",
+      "rive/globals",
+      "jest",
+      "@guoyunhe/node-scripts/global"
+    ],
+    "target": "es2015",
+    "lib": [
+      "esnext"
+    ],
     "allowJs": true,
     "checkJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
+    "isolatedModules": true
   },
-  "include": ["src"],
-  "exclude": ["**/*.spec.js", "**/*.spec.ts", "**/*.test.js", "**/*.test.ts"],
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/*.spec.js",
+    "**/*.spec.ts",
+    "**/*.test.js",
+    "**/*.test.ts",
+    ".rive",
+    "build",
+    "coverage",
+    "dist",
+    "node_modules"
+  ]
 }
