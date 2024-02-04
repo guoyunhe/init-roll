@@ -11,6 +11,11 @@ import sortPackageJson from 'sort-package-json';
 import { arrayMerge } from './private/arrayMerge';
 import { deleteMerge } from './private/deleteMerge';
 
+export interface InitOptions {
+  /** Used to fetch the latest version of dependencies */
+  registryUrl?: string;
+}
+
 export async function init(
   /** Absolute path to template folder */
   templateDir: string,
@@ -18,6 +23,8 @@ export async function init(
   projectDir: string,
   /** Parameters to inject to template files */
   params: Record<string, any>,
+  /** Options */
+  options?: InitOptions,
 ) {
   // Delete files defined by *.delete
   await Promise.all(
@@ -108,7 +115,11 @@ export async function init(
             async ([packageName, version]) => {
               if (version.startsWith('^')) {
                 outputJson.dependencies[packageName] =
-                  '^' + (await latestVersion(packageName, { version }));
+                  '^' +
+                  (await latestVersion(packageName, {
+                    version,
+                    registryUrl: options?.registryUrl,
+                  }));
               }
             },
           ),
@@ -118,7 +129,11 @@ export async function init(
             async ([packageName, version]) => {
               if (version.startsWith('^')) {
                 outputJson.devDependencies[packageName] =
-                  '^' + (await latestVersion(packageName, { version }));
+                  '^' +
+                  (await latestVersion(packageName, {
+                    version,
+                    registryUrl: options?.registryUrl,
+                  }));
               }
             },
           ),
