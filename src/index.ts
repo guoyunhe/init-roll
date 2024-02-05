@@ -4,11 +4,11 @@ import ejs from 'ejs';
 import glob from 'fast-glob';
 import { access, chmod, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import JSON5 from 'json5';
-import latestVersion from 'latest-version';
 import { getPackageJsonFromGit } from 'package-json-from-git';
 import { dirname, join } from 'path';
 import sortPackageJson from 'sort-package-json';
 import { arrayMerge } from './private/arrayMerge';
+import { bumpDependencies } from './private/bumpDependencies';
 import { deleteMerge } from './private/deleteMerge';
 
 export interface InitOptions {
@@ -24,11 +24,13 @@ export async function init(
   /** Parameters to inject to template files */
   params: Record<string, any>,
   /** Options */
-  options?: InitOptions,
+  options?: InitOptions
 ) {
   // Delete files defined by *.delete
   await Promise.all(
-    (await glob(['**/*.delete'], { cwd: templateDir, dot: true })).map(async (template) => {
+    (
+      await glob(['**/*.delete'], { cwd: templateDir, dot: true })
+    ).map(async (template) => {
       const output = template.replace(/\.delete$/, '');
       try {
         await rm(join(projectDir, output), { recursive: true });
@@ -36,12 +38,14 @@ export async function init(
       } catch (e) {
         // Skip
       }
-    }),
+    })
   );
 
   // Create or update files defined by *.ejs
   await Promise.all(
-    (await glob(['**/*.ejs'], { cwd: templateDir, dot: true })).map(async (template) => {
+    (
+      await glob(['**/*.ejs'], { cwd: templateDir, dot: true })
+    ).map(async (template) => {
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       const outputStr = ejs.render(templateStr, params);
       const outputFile = ejs.render(template.replace(/\.ejs$/, ''), params);
@@ -66,12 +70,14 @@ export async function init(
       } else {
         console.log(chalk.green('[created]'), outputFile);
       }
-    }),
+    })
   );
 
   // Delete keys from JSON files, defined by *.delete.json
   await Promise.all(
-    (await glob(['**/*.delete.json'], { cwd: templateDir, dot: true })).map(async (template) => {
+    (
+      await glob(['**/*.delete.json'], { cwd: templateDir, dot: true })
+    ).map(async (template) => {
       const templateJson = JSON5.parse(await readFile(join(templateDir, template), 'utf-8'));
       const outputFile = template.replace(/\.delete\.json$/, '.json');
       const outputFullPath = join(projectDir, outputFile);
@@ -82,12 +88,14 @@ export async function init(
       } catch (e) {
         // Skip
       }
-    }),
+    })
   );
 
   // Override keys of JSON files, defined by *.merge.json
   await Promise.all(
-    (await glob(['**/*.merge.json'], { cwd: templateDir, dot: true })).map(async (template) => {
+    (
+      await glob(['**/*.merge.json'], { cwd: templateDir, dot: true })
+    ).map(async (template) => {
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       const templateJsonStr = ejs.render(templateStr, params);
       const templateJson = JSON5.parse(templateJsonStr);
@@ -110,34 +118,8 @@ export async function init(
       // Special process for package.json
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
-        await Promise.all(
-          Object.entries<string>(outputJson.dependencies || {}).map(
-            async ([packageName, version]) => {
-              if (version.startsWith('^')) {
-                outputJson.dependencies[packageName] =
-                  '^' +
-                  (await latestVersion(packageName, {
-                    version,
-                    registryUrl: options?.registryUrl,
-                  }));
-              }
-            },
-          ),
-        );
-        await Promise.all(
-          Object.entries<string>(outputJson.devDependencies || {}).map(
-            async ([packageName, version]) => {
-              if (version.startsWith('^')) {
-                outputJson.devDependencies[packageName] =
-                  '^' +
-                  (await latestVersion(packageName, {
-                    version,
-                    registryUrl: options?.registryUrl,
-                  }));
-              }
-            },
-          ),
-        );
+        await bumpDependencies(outputJson.dependencies, options.registryUrl);
+        await bumpDependencies(outputJson.devDependencies, options.registryUrl);
         outputJson = merge(repoData, outputJson);
         outputJson = sortPackageJson(outputJson);
       }
@@ -149,6 +131,6 @@ export async function init(
       } else {
         console.log(chalk.green('[created]'), outputFile);
       }
-    }),
+    })
   );
 }
