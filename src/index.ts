@@ -12,6 +12,8 @@ import { bumpDependencies } from './private/bumpDependencies';
 import { deleteMerge } from './private/deleteMerge';
 
 export interface InitOptions {
+  /** Bump dependencies to latest version */
+  bumpDependencies?: boolean;
   /** Used to fetch the latest version of dependencies */
   registryUrl?: string;
 }
@@ -110,8 +112,10 @@ export async function init(
       // Special process for package.json
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
-        await bumpDependencies(outputJson.dependencies, options?.registryUrl);
-        await bumpDependencies(outputJson.devDependencies, options?.registryUrl);
+        if (options.bumpDependencies) {
+          await bumpDependencies(outputJson.dependencies, options?.registryUrl);
+          await bumpDependencies(outputJson.devDependencies, options?.registryUrl);
+        }
         outputJson = merge(repoData, outputJson);
         outputJson = sortPackageJson(outputJson);
       }
