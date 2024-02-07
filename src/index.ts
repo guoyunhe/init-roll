@@ -112,7 +112,7 @@ export async function init(
       // Special process for package.json
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
-        if (options.bumpDependencies) {
+        if (options?.bumpDependencies) {
           await bumpDependencies(outputJson.dependencies, options?.registryUrl);
           await bumpDependencies(outputJson.devDependencies, options?.registryUrl);
         }
