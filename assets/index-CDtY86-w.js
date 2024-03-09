@@ -227,6 +227,7 @@ ${n.map(({variableName:r,uniqueLocalName:o})=>`  reactHotLoader.register(${r}, "
 `,k.jsx(t.h2,{children:"1.1.0 - 2024-03-09"}),`
 `,k.jsxs(t.ul,{children:[`
 `,k.jsxs(t.li,{children:["Added ",k.jsx(t.code,{children:"disableLog"})," option"]}),`
+`,k.jsxs(t.li,{children:["Fixed ",k.jsx(t.code,{children:"*.delete.json"})," not saved issue"]}),`
 `]}),`
 `,k.jsx(t.h2,{children:"1.0.0 - 2024-02-02"}),`
 `,k.jsxs(t.ul,{children:[`
