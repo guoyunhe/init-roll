@@ -85,6 +85,7 @@ export async function init(
       try {
         const outputJson = JSON5.parse(await readFile(outputFullPath, 'utf-8'));
         deleteMerge(outputJson, templateJson);
+        await writeFile(outputFullPath, JSON.stringify(outputJson, null, 2), 'utf-8');
         if (!options.disableLog) {
           console.log(chalk.blue('[updated]'), outputFile);
         }
