@@ -16,6 +16,8 @@ export interface InitOptions {
   bumpDependencies?: boolean;
   /** Used to fetch the latest version of dependencies */
   registryUrl?: string;
+  /** Disable console.log output */
+  disableLog?: boolean;
 }
 
 export async function init(
@@ -34,7 +36,9 @@ export async function init(
       const output = template.replace(/\.delete$/, '');
       try {
         await rm(join(projectDir, output), { recursive: true });
-        console.log(chalk.red('[deleted]'), output);
+        if (!options.disableLog) {
+          console.log(chalk.red('[deleted]'), output);
+        }
       } catch (e) {
         // Skip
       }
@@ -62,11 +66,12 @@ export async function init(
         // Add x mode to executable scripts
         await chmod(outputFullPath, '755');
       }
-
-      if (exist) {
-        console.log(chalk.blue('[updated]'), outputFile);
-      } else {
-        console.log(chalk.green('[created]'), outputFile);
+      if (!options.disableLog) {
+        if (exist) {
+          console.log(chalk.blue('[updated]'), outputFile);
+        } else {
+          console.log(chalk.green('[created]'), outputFile);
+        }
       }
     }),
   );
@@ -80,7 +85,9 @@ export async function init(
       try {
         const outputJson = JSON5.parse(await readFile(outputFullPath, 'utf-8'));
         deleteMerge(outputJson, templateJson);
-        console.log(chalk.blue('[updated]'), outputFile);
+        if (!options.disableLog) {
+          console.log(chalk.blue('[updated]'), outputFile);
+        }
       } catch (e) {
         // Skip
       }
@@ -122,10 +129,12 @@ export async function init(
 
       await writeFile(outputFullPath, JSON.stringify(outputJson, null, 2), 'utf-8');
 
-      if (exist) {
-        console.log(chalk.blue('[updated]'), outputFile);
-      } else {
-        console.log(chalk.green('[created]'), outputFile);
+      if (!options.disableLog) {
+        if (exist) {
+          console.log(chalk.blue('[updated]'), outputFile);
+        } else {
+          console.log(chalk.green('[created]'), outputFile);
+        }
       }
     }),
   );
