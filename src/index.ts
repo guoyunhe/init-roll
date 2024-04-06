@@ -6,6 +6,7 @@ import { access, chmod, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import JSON5 from 'json5';
 import { getPackageJsonFromGit } from 'package-json-from-git';
 import { dirname, join } from 'path';
+import { Options as PrettierOptions } from 'prettier';
 import sortPackageJson from 'sort-package-json';
 import { arrayMerge } from './private/arrayMerge';
 import { bumpDependencies } from './private/bumpDependencies';
@@ -18,6 +19,8 @@ export interface InitOptions {
   registryUrl?: string;
   /** Disable console.log output */
   disableLog?: boolean;
+  /** Enable Prettier and set options */
+  prettier?: PrettierOptions;
 }
 
 export async function init(
