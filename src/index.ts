@@ -6,7 +6,7 @@ import { access, chmod, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import JSON5 from 'json5';
 import { getPackageJsonFromGit } from 'package-json-from-git';
 import { dirname, join } from 'path';
-import { Options as PrettierOptions } from 'prettier';
+import { Options as PrettierOptions, format } from 'prettier';
 import sortPackageJson from 'sort-package-json';
 import { arrayMerge } from './private/arrayMerge';
 import { bumpDependencies } from './private/bumpDependencies';
@@ -52,7 +52,7 @@ export async function init(
   await Promise.all(
     (await glob(['**/*.ejs'], { cwd: templateDir, dot: true })).map(async (template) => {
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
-      const outputStr = ejs.render(templateStr, params);
+      let outputStr = ejs.render(templateStr, params);
       const outputFile = ejs.render(template.replace(/\.ejs$/, ''), params);
       const outputFullPath = join(projectDir, outputFile);
       await mkdir(dirname(outputFullPath), { recursive: true });
@@ -62,6 +62,9 @@ export async function init(
         exist = true;
       } catch (e) {
         exist = false;
+      }
+      if (options?.prettier) {
+        outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
       }
       await writeFile(outputFullPath, outputStr, 'utf-8');
 
@@ -88,7 +91,11 @@ export async function init(
       try {
         const outputJson = JSON5.parse(await readFile(outputFullPath, 'utf-8'));
         deleteMerge(outputJson, templateJson);
-        await writeFile(outputFullPath, JSON.stringify(outputJson, null, 2), 'utf-8');
+        let outputStr = JSON.stringify(outputJson, null, 2);
+        if (options?.prettier) {
+          outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+        }
+        await writeFile(outputFullPath, outputStr, 'utf-8');
         if (!options?.disableLog) {
           console.log(chalk.blue('[updated]'), outputFile);
         }
@@ -131,7 +138,11 @@ export async function init(
         outputJson = sortPackageJson(outputJson);
       }
 
-      await writeFile(outputFullPath, JSON.stringify(outputJson, null, 2), 'utf-8');
+      let outputStr = JSON.stringify(outputJson, null, 2);
+      if (options?.prettier) {
+        outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+      }
+      await writeFile(outputFullPath, outputStr, 'utf-8');
 
       if (!options?.disableLog) {
         if (exist) {
