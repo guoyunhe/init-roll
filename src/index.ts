@@ -64,7 +64,11 @@ export async function init(
         exist = false;
       }
       if (options?.prettier) {
-        outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+        try {
+          outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+        } catch (e) {
+          // skip if no parser is found for the file
+        }
       }
       await writeFile(outputFullPath, outputStr, 'utf-8');
 
@@ -93,7 +97,11 @@ export async function init(
         deleteMerge(outputJson, templateJson);
         let outputStr = JSON.stringify(outputJson, null, 2);
         if (options?.prettier) {
-          outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+          try {
+            outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+          } catch (e) {
+            // skip if no parser is found for the file
+          }
         }
         await writeFile(outputFullPath, outputStr, 'utf-8');
         if (!options?.disableLog) {
@@ -140,7 +148,11 @@ export async function init(
 
       let outputStr = JSON.stringify(outputJson, null, 2);
       if (options?.prettier) {
-        outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+        try {
+          outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+        } catch (e) {
+          // skip if no parser is found for the file
+        }
       }
       await writeFile(outputFullPath, outputStr, 'utf-8');
 
