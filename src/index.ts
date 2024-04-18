@@ -119,6 +119,14 @@ export async function init(
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       const templateJsonStr = ejs.render(templateStr, params);
       const templateJson = JSON5.parse(templateJsonStr);
+      if (options?.bumpDependencies) {
+        if (templateJson.dependencies) {
+          await bumpDependencies(templateJson.dependencies, options?.registryUrl);
+        }
+        if (templateJson.devDependencies) {
+          await bumpDependencies(templateJson.devDependencies, options?.registryUrl);
+        }
+      }
       const outputFile = template.replace(/\.merge\.json$/, '.json');
       const outputFullPath = join(projectDir, outputFile);
       await mkdir(dirname(outputFullPath), { recursive: true });
@@ -138,10 +146,6 @@ export async function init(
       // Special process for package.json
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
-        if (options?.bumpDependencies) {
-          await bumpDependencies(outputJson.dependencies, options?.registryUrl);
-          await bumpDependencies(outputJson.devDependencies, options?.registryUrl);
-        }
         outputJson = merge(repoData, outputJson);
         outputJson = sortPackageJson(outputJson);
       }
