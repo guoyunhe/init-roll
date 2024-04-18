@@ -5,7 +5,7 @@ import glob from 'fast-glob';
 import { access, chmod, mkdir, readFile, rm, writeFile } from 'fs/promises';
 import JSON5 from 'json5';
 import { getPackageJsonFromGit } from 'package-json-from-git';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 import { Options as PrettierOptions, format } from 'prettier';
 import sortPackageJson from 'sort-package-json';
 import { arrayMerge } from './private/arrayMerge';
@@ -119,7 +119,13 @@ export async function init(
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       const templateJsonStr = ejs.render(templateStr, params);
       const templateJson = JSON5.parse(templateJsonStr);
-      if (options?.bumpDependencies) {
+
+      const outputFile = template.replace(/\.merge\.json$/, '.json');
+      const outputFullPath = join(projectDir, outputFile);
+      await mkdir(dirname(outputFullPath), { recursive: true });
+
+      // bump dependencies of package.json template
+      if (basename(outputFullPath) === 'package.json' && options?.bumpDependencies) {
         if (templateJson.dependencies) {
           await bumpDependencies(templateJson.dependencies, options?.registryUrl);
         }
@@ -127,9 +133,6 @@ export async function init(
           await bumpDependencies(templateJson.devDependencies, options?.registryUrl);
         }
       }
-      const outputFile = template.replace(/\.merge\.json$/, '.json');
-      const outputFullPath = join(projectDir, outputFile);
-      await mkdir(dirname(outputFullPath), { recursive: true });
 
       let outputJson: any = {};
       let exist = false;
@@ -143,7 +146,7 @@ export async function init(
 
       outputJson = merge(outputJson, templateJson, { arrayMerge });
 
-      // Special process for package.json
+      // format package.json output
       if (outputFile === 'package.json' || outputFile.endsWith('/package.json')) {
         const repoData = await getPackageJsonFromGit(projectDir);
         outputJson = merge(repoData, outputJson);

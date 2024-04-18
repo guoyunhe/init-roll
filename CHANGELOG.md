@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.0 - 2024-04-18
+
+- Changed `bumpDependencies` behavior to only bump dependencies from template
+
 ## 1.2.0 - 2024-04-07
 
 - Added `prettier` option to format updated files
