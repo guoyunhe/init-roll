@@ -4,13 +4,14 @@
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "types": ["node", "rive/globals"],
-    "target": "es2015",
+    "target": "es2020",
     "lib": ["esnext"],
     "allowJs": true,
     "checkJs": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "noEmit": true
   },
   "exclude": [".rive", "build", "coverage", "dist", "node_modules"]
 }
