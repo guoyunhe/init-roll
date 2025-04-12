@@ -1,3 +1,4 @@
+import { sleep } from '@guoyunhe/sleep';
 import chalk from 'chalk';
 import merge from 'deepmerge';
 import ejs from 'ejs';
@@ -48,6 +49,9 @@ export async function init(
     }),
   );
 
+  // avoid some file system not actually finish file writting
+  await sleep(1000);
+
   // Create files defined by *.default
   await Promise.all(
     (await glob(['**/*.default'], { cwd: templateDir, dot: true })).map(async (template) => {
@@ -82,6 +86,9 @@ export async function init(
       }
     }),
   );
+
+  // avoid some file system not actually finish file writting
+  await sleep(1000);
 
   // Create or update files defined by *.override or *.ejs (deprecated)
   await Promise.all(
@@ -123,6 +130,9 @@ export async function init(
     ),
   );
 
+  // avoid some file system not actually finish file writting
+  await sleep(1000);
+
   // Delete keys from JSON files, defined by *.delete.json
   await Promise.all(
     (await glob(['**/*.delete.json'], { cwd: templateDir, dot: true })).map(async (template) => {
@@ -149,6 +159,9 @@ export async function init(
       }
     }),
   );
+
+  // avoid some file system not actually finish file writting
+  await sleep(1000);
 
   // Override keys of JSON files, defined by *.merge.json
   await Promise.all(
