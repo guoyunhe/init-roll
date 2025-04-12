@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.0 - 2025-04-12
+
+- Added `*.default` template support
+- Added `*.override` template support
+- Deprecated `*.ejs` template support
+
 ## 1.3.0 - 2024-04-18
 
 - Changed `bumpDependencies` behavior to only bump dependencies from template

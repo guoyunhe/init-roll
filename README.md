@@ -20,23 +20,32 @@ init('/path/to/template', '/path/to/project', {
 });
 ```
 
-## Write EJS templates
+## Template writting guides
 
-`/path/to/template/src/index.ts.ejs` will be compiled to `/path/to/project/src/index.ts`. You can use [EJS](https://ejs.co/) template syntax.
+### \*.delete
 
-```ejs
-export function <%= name %>() {
-  //
-}
-```
+If you created `webpack.config.js.delete` file, then `webpack.config.js` will be deleted. This is a
+convenient way to clean up conflict files and folders.
 
-You can also use EJS syntax in file names, for example `/path/to/template/src/<%= name %>.ts.ejs`.
+You can also use [EJS] syntax in template names, for example `src/<%= name %>.delete`.
 
-## Delete conflict files
+### \*.default
 
-If you created `/path/to/template/webpack.config.js.delete` file, then `/path/to/project/webpack.config.js` will be deleted when initializing. This is a convenient way to clean up conflict files and folders.
+If you created `src/foobar.js.default` template (support [EJS] template syntax):
 
-## Merge JSON files
+- If `src/foobar.js` doesn't exist, it will be created with content compiled from the template
+- If `src/foobar.js` exists, nothing will happen
+
+You can also use [EJS] syntax in template names, for example `src/<%= name %>.default`.
+
+### \*.override
+
+If you created `src/foobar.js.override` template (support [EJS] template syntax), it will be compiled
+to `src/foobar.js` and override existing file.
+
+You can also use [EJS] syntax in template names, for example `src/<%= name %>.override`.
+
+## \*.merge.json
 
 When deal with `package.json`, you can use `/path/to/template/package.merge.json` to merge template data with existing data. You can also use EJS template syntax in `*.merge.json`.
 
@@ -53,7 +62,7 @@ When deal with `package.json`, you can use `/path/to/template/package.merge.json
 }
 ```
 
-## Delete JSON keys
+## \*.delete.json
 
 If you want to remove conflict keys in `package.json` file, create `/path/to/template/package.delete.json`, which contains keys you want to delete and values are `null`.
 
@@ -66,3 +75,5 @@ If you want to remove conflict keys in `package.json` file, create `/path/to/tem
   }
 }
 ```
+
+[EJS]: https://ejs.co/

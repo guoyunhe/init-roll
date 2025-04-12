@@ -42,31 +42,32 @@ export async function init(
         if (!options?.disableLog) {
           console.log(chalk.red('[deleted]'), output);
         }
-      } catch (e) {
+      } catch {
         // Skip
       }
     }),
   );
 
-  // Create or update files defined by *.ejs
+  // Create files defined by *.default
   await Promise.all(
-    (await glob(['**/*.ejs'], { cwd: templateDir, dot: true })).map(async (template) => {
+    (await glob(['**/*.default'], { cwd: templateDir, dot: true })).map(async (template) => {
       const templateStr = await readFile(join(templateDir, template), 'utf-8');
       let outputStr = ejs.render(templateStr, params);
-      const outputFile = ejs.render(template.replace(/\.ejs$/, ''), params);
+      const outputFile = ejs.render(template.replace(/\.default$/, ''), params);
       const outputFullPath = join(projectDir, outputFile);
-      await mkdir(dirname(outputFullPath), { recursive: true });
-      let exist = false;
       try {
+        // exist, skip
         await access(outputFullPath);
-        exist = true;
-      } catch (e) {
-        exist = false;
+        return;
+      } catch {
+        // not exist, continue
       }
+
+      await mkdir(dirname(outputFullPath), { recursive: true });
       if (options?.prettier) {
         try {
           outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
-        } catch (e) {
+        } catch {
           // skip if no parser is found for the file
         }
       }
@@ -77,13 +78,49 @@ export async function init(
         await chmod(outputFullPath, '755');
       }
       if (!options?.disableLog) {
-        if (exist) {
-          console.log(chalk.blue('[updated]'), outputFile);
-        } else {
-          console.log(chalk.green('[created]'), outputFile);
-        }
+        console.log(chalk.green('[created]'), outputFile);
       }
     }),
+  );
+
+  // Create or update files defined by *.override or *.ejs (deprecated)
+  await Promise.all(
+    (await glob(['**/*.override', '**/*.ejs'], { cwd: templateDir, dot: true })).map(
+      async (template) => {
+        const templateStr = await readFile(join(templateDir, template), 'utf-8');
+        let outputStr = ejs.render(templateStr, params);
+        const outputFile = ejs.render(template.replace(/\.(override|ejs)$/, ''), params);
+        const outputFullPath = join(projectDir, outputFile);
+        await mkdir(dirname(outputFullPath), { recursive: true });
+        let exist = false;
+        try {
+          await access(outputFullPath);
+          exist = true;
+        } catch {
+          exist = false;
+        }
+        if (options?.prettier) {
+          try {
+            outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
+          } catch {
+            // skip if no parser is found for the file
+          }
+        }
+        await writeFile(outputFullPath, outputStr, 'utf-8');
+
+        if (outputStr.startsWith('#!')) {
+          // Add x mode to executable scripts
+          await chmod(outputFullPath, '755');
+        }
+        if (!options?.disableLog) {
+          if (exist) {
+            console.log(chalk.blue('[updated]'), outputFile);
+          } else {
+            console.log(chalk.green('[created]'), outputFile);
+          }
+        }
+      },
+    ),
   );
 
   // Delete keys from JSON files, defined by *.delete.json
@@ -99,7 +136,7 @@ export async function init(
         if (options?.prettier) {
           try {
             outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
-          } catch (e) {
+          } catch {
             // skip if no parser is found for the file
           }
         }
@@ -107,7 +144,7 @@ export async function init(
         if (!options?.disableLog) {
           console.log(chalk.blue('[updated]'), outputFile);
         }
-      } catch (e) {
+      } catch {
         // Skip
       }
     }),
@@ -140,7 +177,7 @@ export async function init(
       try {
         outputJson = JSON5.parse(await readFile(outputFullPath, 'utf-8'));
         exist = true;
-      } catch (e) {
+      } catch {
         // Skip
       }
 
@@ -157,7 +194,7 @@ export async function init(
       if (options?.prettier) {
         try {
           outputStr = await format(outputStr, { ...options.prettier, filepath: outputFile });
-        } catch (e) {
+        } catch {
           // skip if no parser is found for the file
         }
       }
